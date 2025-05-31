@@ -27,9 +27,11 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
-readdirSync("./routes").map((route) => 
+readdirSync("./routes")
+  .filter((file) => file.endsWith(".js"))
+  .forEach((route) =>
     app.use("/api", require(`./routes/${route}`))
-);
+  );
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
