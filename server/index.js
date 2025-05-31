@@ -1,7 +1,8 @@
 const express = require("express");
-const cors =  require("cors");
+const cors = require("cors");
 const dotenv = require("dotenv");
-const {readdirSync} = require("fs");
+const { readdirSync } = require("fs");
+const path = require("path");
 const connectDb = require("./lib/connection");
 const morgan = require("morgan");
 
@@ -12,27 +13,26 @@ dotenv.config();
 connectDb();
 app.use(morgan("dev"));
 
-
 // ✅ CORS Setup
 const corsOptions = {
-  origin: process.env.CLIENT_URL || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
+  origin: process.env.CLIENT_URL || "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
-
-// ✅ Handle OPTIONS requests globally
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
-readdirSync("./routes")
+// ✅ SAFELY Load all route files from routes/
+readdirSync(path.join(__dirname, "routes"))
   .filter((file) => file.endsWith(".js"))
-  .forEach((route) =>
-    app.use("/api", require(`./routes/${route}`))
-  );
+  .forEach((route) => {
+    const routeModule = require(`./routes/${route}`);
+    if (typeof routeModule === "function") {
+      app.use("/api", routeModule);
+    }
+  });
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-
-
