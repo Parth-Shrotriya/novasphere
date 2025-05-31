@@ -13,7 +13,7 @@ connectDb();
 app.use(morgan("dev"));
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: process.env.https://novasphere-client.onrender.com,
     })
 );
 app.use(express.json());
