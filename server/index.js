@@ -25,11 +25,11 @@ app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
-// ✅ SAFELY Load all route files from routes/
+// ✅ SAFELY Load all route files from /routes using absolute path
 readdirSync(path.join(__dirname, "routes"))
   .filter((file) => file.endsWith(".js"))
-  .forEach((route) => {
-    const routeModule = require(`./routes/${route}`);
+  .forEach((routeFile) => {
+    const routeModule = require(`./routes/${routeFile}`);
     if (typeof routeModule === "function") {
       app.use("/api", routeModule);
     }
