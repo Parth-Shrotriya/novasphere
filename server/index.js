@@ -22,6 +22,10 @@ readdirSync("./routes").map((route) =>
     app.use("/api", require(`./routes/${route}`))
 );
 
+app.get("/", (req, res) => {
+  res.send("Backend is working!");
+});
+
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
 
